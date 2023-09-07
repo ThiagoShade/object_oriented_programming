@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+    <title>Minha Página Inicial</title>
+</h:head>
+    <ui:composition template="WEB-INF/templates/template.xhtml">
+        <ui:define name="resto">
+
+            <!-- Conteúdo específico da página -->
+
+
+                <!--Waves Container-->
+                <div>
+                    <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                         viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                        <defs>
+                            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                        </defs>
+                        <g class="parallax">
+                            <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(0, 30, 105, 0.5)" /> <!-- Azul escuro com opacidade 0.5 -->
+                            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(0, 50, 105, 0.4)" /> <!-- Azul escuro com opacidade 0.3 -->
+                            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(0, 25, 105, 0.3)" /> <!-- Azul escuro com opacidade 0.2 -->
+                            <use xlink:href="#gentle-wave" x="48" y="7" fill="rgba(0, 100, 105, 0.3)" /> <!-- Azul escuro (sem opacidade) -->
+                        </g>
+                    </svg>
+                </div>
+                <!--Waves end-->
+
+                <div class="div1">
+                <div>
+                    <h1 class="centered-text">
+                        <span class="animated-text">Organize </span>suas despesas<br/>
+                        <span class="animated-text">Facilite </span>sua vida.<br/>
+                    </h1>
+                    <br/>
+                    <br/>
+                    <span class="description-text">Esse é um projeto feito para a disciplina de Programação Orientada a Objetos usando padrão MVC com o JSF
+                    para a implementação de um sistema de nossa escolha, nesse caso um sistema de gerenciamento de despesas,
+                    sendo possível apresentar as despesas de várias formas, além de adicionar, excluir e editar despesas.</span>
+                </div>
+                </div>
+
+
+
+        </ui:define>
+    </ui:composition>
+</html>

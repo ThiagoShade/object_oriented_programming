@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="pt-BR">
+<h:head>
+    <meta charset="UTF-8" />
+    <title>Despesas</title>
+    <link rel="stylesheet" type="text/css" href="resources/css/styles.css"/>
+</h:head>
+
+<ui:composition template="WEB-INF/templates/template.xhtml">
+    <ui:define name="resto">
+
+        <h:form styleClass="add-form">
+            <div class="add-div-container" >
+                <div class="add-div">
+                    <p:panel header="Adicionar Despesa" styleClass="ui-panel" class="add-panel" >
+
+                        <p:messages for="mensagemSucesso" closable="true"/>
+
+                        <div class="ui-g-12">
+                            <h:outputLabel for="descricao" value="Descrição: " />
+                            <p:inputText id="descricao" value="#{addDespesaBean.novaDespesa.descricao}" required="true" style="width: 500px"/>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:outputLabel for="valor" value="Valor: " />
+                            <p:inputNumber id="valor" value="#{addDespesaBean.novaDespesa.valor}" decimalSeparator="#{viewBean.selectedFormat.charAt(0)}" thousandSeparator="#{viewBean.selectedFormat.charAt(1)}"
+                                           emptyValue="zero" minValue="0.0" required="true"/>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:outputLabel for="data" value="Data: " />
+                            <p:datePicker id="data" value="#{addDespesaBean.novaDespesa.data}" pattern="dd/MM/yyyy" required="true" monthNavigator="true" yearNavigator="true" style="width: 400px"/>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:outputLabel for="categoria" value="Categoria: " />
+                            <p:selectOneMenu id="categoria" value="#{addDespesaBean.novaDespesa.categoria}" required="true">
+                                <f:selectItem itemLabel="Selecione uma categoria" itemValue=""/>
+                                <f:selectItems value="#{despesaBean.categorias}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton id="add-categoria-button" type="button" onclick="PF('dlgAddCategoria').show();" immediate="true" icon="pi pi-plus" style="margin-left: 5px" styleClass="rounded-button ui-button-success"/>
+                            <p:commandButton id="rm-categoria-button" onclick="PF('dlgRmCategoria').show();" type="button" icon="pi pi-trash" style="margin-left: 5px" styleClass="rounded-button ui-button-danger"/>
+                            <p:tooltip for="add-categoria-button" value="Adicionar categoria" showEffect="clip" hideEffect="fold" />
+                            <p:tooltip for="rm-categoria-button" value="Remover categoria" showEffect="clip" hideEffect="fold" />
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:outputLabel for="metodoPagamento" value="Método de pagamento: " />
+                            <p:selectOneMenu id="metodoPagamento" value="#{addDespesaBean.novaDespesa.metodoPagamento}" required="true">
+                                <f:selectItem itemLabel="Selecione um método" itemValue=""/>
+                                <f:selectItems value="#{despesaBean.metodosPagamento}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton id="add-met-button" type="button" onclick="PF('dlgAddMet').show();" immediate="true" icon="pi pi-plus" style="margin-left: 5px" styleClass="rounded-button ui-button-success"/>
+                            <p:commandButton id="rm-met-button" type="button" onclick="PF('dlgRmMet').show();" icon="pi pi-trash" style="margin-left: 5px" styleClass="rounded-button ui-button-danger"/>
+                            <p:tooltip for="add-met-button" value="Adicionar método" showEffect="clip" hideEffect="fold" />
+                            <p:tooltip for="rm-met-button" value="Remover método" showEffect="clip" hideEffect="fold" />
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:outputLabel for="moeda" value="Moeda: "/>
+                            <p:selectOneMenu id="moeda" value="#{addDespesaBean.novaDespesa.moeda}" required="true">
+                                <f:selectItem itemLabel="Selecione uma moeda" itemValue=""/>
+                                <f:selectItems value="#{despesaBean.moedas}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton id="add-moeda-button" type="button" onclick="PF('dlgAddMoeda').show();" immediate="true" icon="pi pi-plus" style="margin-left: 5px" styleClass="rounded-button ui-button-success"/>
+                            <p:commandButton id="rm-moeda-button" type="button" onclick="PF('dlgRmMoeda').show();" icon="pi pi-trash" style="margin-left: 5px" styleClass="rounded-button ui-button-danger"/>
+                            <p:tooltip for="add-moeda-button" value="Adicionar moeda" showEffect="clip" hideEffect="fold" />
+                            <p:tooltip for="rm-moeda-button" value="Remover moeda" showEffect="clip" hideEffect="fold" />
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:outputLabel for="status" value="Status: " />
+                            <p:selectOneMenu id="status" value="#{addDespesaBean.novaDespesa.status}" required="true">
+                                <f:selectItem itemLabel="Selecione um status" itemValue=""/>
+                                <f:selectItems value="#{despesaBean.status}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <f:facet name="footer">
+                            <div class="button-container" style="display: flex; justify-content: space-between">
+                                <p:commandButton value="Voltar" action="#{addDespesaBean.voltarParaDespesas()}" immediate="true"/>
+                                <p:commandButton value="Adicionar" action="#{addDespesaBean.addDespesa()}" update="@form" styleClass="ui-button-success"/>
+                            </div>
+                        </f:facet>
+                    </p:panel>
+                </div>
+            </div>
+
+        </h:form>
+
+        <h:form>
+            <p:dialog header="Adicionar categoria" widgetVar="dlgAddCategoria">
+                <h:panelGrid columns="2" cellpadding="5" style="display: flex; justify-content: space-between">
+                    <h:outputLabel for="add-categoria" value="Categoria: " />
+                    <p:inputText id="add-categoria" value="#{addDespesaBean.selectedCategoria}" required="true" />
+                    <span></span>
+                    <p:commandButton icon="pi pi-check" action="#{addDespesaBean.addCategoria()}" onclick="PF('dlgAddCategoria').close();" styleClass="ui-button-success" style="margin-top: 10px; margin-left: auto; display: block;"/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form>
+            <p:dialog header="Remover categoria" widgetVar="dlgRmCategoria">
+                <h:panelGrid columns="2" cellpadding="5" style="display: flex; justify-content: space-between">
+                    <h:outputLabel for="rm-categoria" value="Categoria: " />
+                    <p:selectOneMenu id="rm-categoria" value="#{addDespesaBean.selectedCategoria}" required="true">
+                        <f:selectItem itemLabel="Selecione uma categoria" itemValue=""/>
+                        <f:selectItems value="#{despesaBean.categorias}"/>
+                    </p:selectOneMenu>
+                    <span></span>
+                    <p:commandButton icon="pi pi-trash" action="#{addDespesaBean.rmCategoria()}" onclick="PF('dlgRmCategoria').close();" styleClass="ui-button-danger" style="margin-top: 10px; margin-left: auto; display: block;"/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form>
+            <p:dialog header="Adicionar método" widgetVar="dlgAddMet">
+                <h:panelGrid columns="2" cellpadding="5" style="display: flex; justify-content: space-between">
+                    <h:outputLabel for="add-met" value="Método de pagamento: " />
+                    <p:inputText id="add-met" value="#{addDespesaBean.selectedMetodoPagamento}" required="true" />
+                    <span></span>
+                    <p:commandButton icon="pi pi-check" action="#{addDespesaBean.addMetodoPagamento()}" onclick="PF('dlgAddMet').close();" styleClass="ui-button-success" style="margin-top: 10px; margin-left: auto; display: block;"/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form>
+            <p:dialog header="Remover método" widgetVar="dlgRmMet">
+                <h:panelGrid columns="2" cellpadding="5" style="display: flex; justify-content: space-between">
+                    <h:outputLabel for="rm-met" value="Método de pagamento: " />
+                    <p:selectOneMenu id="rm-met" value="#{addDespesaBean.selectedMetodoPagamento}" required="true">
+                        <f:selectItem itemLabel="Selecione um método" itemValue=""/>
+                        <f:selectItems value="#{despesaBean.metodosPagamento}"/>
+                    </p:selectOneMenu>
+                    <span></span>
+                    <p:commandButton icon="pi pi-trash" action="#{addDespesaBean.rmMetodoPagamento()}" onclick="PF('dlgRmMet').close();" styleClass="ui-button-danger" style="margin-top: 10px; margin-left: auto; display: block;"/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form>
+            <p:dialog header="Adicionar moeda" widgetVar="dlgAddMoeda">
+                <h:panelGrid columns="2" cellpadding="5" style="display: flex;justify-content: space-between">
+                    <h:outputLabel for="add-moeda" value="Moeda: " />
+                    <p:inputText id="add-moeda" value="#{addDespesaBean.selectedMoeda}" required="true" />
+                    <span></span>
+                    <p:commandButton icon="pi pi-check" action="#{addDespesaBean.addMoeda()}" onclick="PF('dlgAddMoeda').close();" styleClass="ui-button-success" style="margin-top: 10px; margin-left: auto; display: block;"/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form>
+            <p:dialog header="Remover moeda" widgetVar="dlgRmMoeda">
+                <h:panelGrid columns="2" cellpadding="5" style="display: flex;justify-content: space-between">
+                    <h:outputLabel for="rm-moeda" value="Moeda: " />
+                    <p:selectOneMenu id="rm-moeda" value="#{addDespesaBean.selectedMoeda}" required="true">
+                        <f:selectItem itemLabel="Selecione uma moeda" itemValue=""/>
+                        <f:selectItems value="#{despesaBean.moedas}"/>
+                    </p:selectOneMenu>
+                    <span></span>
+                    <p:commandButton icon="pi pi-trash" action="#{addDespesaBean.rmMoeda()}" onclick="PF('dlgRmMoeda').close();" styleClass="ui-button-danger" style="margin-top: 10px; margin-left: auto; display: block;"/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+
+
+</html>
