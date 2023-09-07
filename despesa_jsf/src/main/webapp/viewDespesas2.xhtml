@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="pt-BR">
+<h:head>
+    <meta charset="UTF-8" />
+    <title>Despesas</title>
+</h:head>
+
+<ui:composition template="WEB-INF/templates/template.xhtml">
+    <ui:define name="resto">
+        <h:form>
+            <p:growl id="message" showDetail="true"/>
+
+
+
+            <p:selectOneMenu value="#{viewBean.selectedFormat}">
+                <f:selectItem itemValue=",." itemLabel="1.000,00" />
+                <f:selectItem itemValue=".," itemLabel="1,000.00" />
+                <p:ajax update="tabela-despesas" />
+            </p:selectOneMenu>
+
+            <div class="tabela-container">
+
+                <p:dataTable id="tabela-despesas" styleClass="tabela-despesas" value="#{despesaBean.listaDespesas}" var="despesa" selectionMode="single"
+                             selection="#{editDespesaBean.selectedDespesa}" editable="true" rowKey="#{despesa.id}" filteredValue="#{despesaBean.filteredDespesas}"
+                             emptyMessage="Nenhuma despesa encontrada com os requisitos dados" allowUnsorting="true" TodosowUnsorting="true" widgetVar="table-desp"
+                             draggableColumns="true" draggableRows="true" resizableColumns="false" scrollable="true" scrollHeight="525">
+
+
+                    <f:facet name="header">
+                        <div class="botoes-container">
+                            <p:commandButton value="Excluir despesas" action="#{despesaBean.limparDespesas()}" update="tabela-despesas" styleClass="ui-button-danger" icon="pi pi-trash">
+                                <p:confirm header="Confimação" message="Tem certeza que deseja excluir TODAS as despesas?" icon="pi pi-info-circle"/>
+                            </p:commandButton>
+
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true">
+                                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+                            </p:confirmDialog>
+
+                            <p:commandButton value="Adicionar despesa" action="#{addDespesaBean.redirecionarParaAddDespesa()}" styleClass="ui-button-success" icon="pi pi-plus"/>
+
+
+                            <div class="botao-colunas">
+                                <p:commandButton id="toggler" type="button" value="Colunas" icon="pi pi-align-justify"/>
+                                <p:columnToggler datasource="tabela-despesas" trigger="toggler">
+                                    <p:ajax />
+                                </p:columnToggler>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Descrição" styleClass="coluna-descricao" sortBy="#{despesa.descricao}" filterBy="#{despesa.descricao}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{despesa.descricao}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText id="modelInput" value="#{despesa.descricao}" style="width:100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Valor" styleClass="coluna-valor" sortBy="#{despesa.valor}" >
+
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{viewBean.formatarValor(despesa.valor)}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputNumber value="#{despesa.valor}" style="width:100%" label="Valor"/>
+                            </f:facet>
+                        </p:cellEditor>
+
+                    </p:column>
+
+                    <p:column headerText="Data" styleClass="coluna-data" sortBy="#{despesa.data}" filterBy="#{despesa.data}" filterMatchMode="between">
+
+                        <f:facet name="filter">
+                            <p:datePicker converter="jakarta.faces.DateTime" selectionMode="range" onchange="PF('table-desp').filter()" yearNavigator="true" monthNavigator="true" styleClass="ui-custom-filter"/>
+                        </f:facet>
+
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{despesa.data}" converter="jakarta.faces.DateTime"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:datePicker value="#{despesa.data}" yearNavigator="true" monthNavigator="true"/>
+                            </f:facet>
+                        </p:cellEditor>
+
+                    </p:column>
+
+                    <p:column headerText="Categoria" sortBy="#{despesa.categoria}" filterBy="#{despesa.categoria}" styleClass="coluna-categoria">
+
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{despesa.categoria}"/></f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{despesa.categoria}" style="width:100%">
+                                    <f:selectItems value="#{despesaBean.categorias}" var="categoria"
+                                                   itemLabel="#{categoria}" itemValue="#{categoria}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+
+
+                    </p:column>
+
+                    <p:column headerText="Método de pagamento" sortBy="#{despesa.metodoPagamento}" filterBy="#{despesa.metodoPagamento}" styleClass="coluna-metodo">
+
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{despesa.metodoPagamento}"/></f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{despesa.metodoPagamento}" style="width:100%">
+                                    <f:selectItems value="#{despesaBean.metodosPagamento}" var="metodoPagamento"
+                                                   itemLabel="#{metodoPagamento}" itemValue="#{metodoPagamento}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+
+
+                    </p:column>
+
+                    <p:column headerText="Moeda" sortBy="#{despesa.moeda}" filterBy="#{despesa.moeda}" styleClass="coluna-moeda">
+
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{despesa.moeda}"/></f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{despesa.moeda}" style="width:100%">
+                                    <f:selectItems value="#{despesaBean.moedas}" var="moeda"
+                                                   itemLabel="#{moeda}" itemValue="#{moeda}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+
+
+                    </p:column>
+
+                    <p:column headerText="Status" styleClass="coluna-status" sortBy="#{despesa.status}" filterBy="#{despesa.status}" filterMatchMode="exact">
+
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{despesa.status}"/></f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{despesa.status}" style="width:100%">
+                                    <f:selectItems value="#{despesaBean.status}" var="status"
+                                                   itemLabel="#{status}" itemValue="#{status}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+
+
+                    </p:column>
+
+                    <p:column styleClass="coluna-editar" headerText="Editar">
+                        <p:rowEditor editTitle="Editar despesa" cancelTitle="Cancelar edição" saveTitle="Salvar edição"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <span class="font-bold">#{despesaBean.listaDespesas.size()} despesas no total.</span>
+                    </f:facet>
+                </p:dataTable>
+            </div>
+            <p:contextMenu for="tabela-despesas">
+                <p:menuitem value="Excluir" icon="pi pi-times" update="tabela-despesas"
+                            action="#{editDespesaBean.deleteDespesa()}"/>
+            </p:contextMenu>
+
+            <p:remoteCommand name="salvarDespesas" action="#{despesaJSONBean.salvarDespesas()}" />
+
+        </h:form>
+
+        <script type="text/javascript">
+            window.addEventListener("beforeunload", function (e) {
+
+            salvarDespesas();
+            });
+        </script>
+
+
+    </ui:define>
+</ui:composition>
+
+
+</html>
